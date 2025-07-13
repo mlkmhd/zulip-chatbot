@@ -1,0 +1,16 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+ZULIP_EMAIL=os.getenv("ZULIP_EMAIL")
+ZULIP_API_KEY=os.getenv("ZULIP_API_KEY")
+ZULIP_BASE_URL=os.getenv("ZULIP_BASE_URL")
+
+STREAM_NAME=os.getenv("STREAM_NAME")
+LAST_MSG_ID_FILE=os.getenv("LAST_MSG_ID_FILE")
+
+GITLAB_BASE_URL=os.getenv("GITLAB_BASE_URL")
+GITLAB_TRIGGER_URL=os.getenv("GITLAB_TRIGGER_URL")
+GITLAB_TRIGGER_TOKEN=os.getenv("GITLAB_TRIGGER_TOKEN")
+GITLAB_API_TOKEN=os.getenv("GITLAB_API_TOKEN")
+GITLAB_BRANCH=os.getenv("GITLAB_BRANCH")
