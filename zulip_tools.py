@@ -2,19 +2,20 @@ import requests
 from config import *
 
 
-def get_last_message_id():
-    try:
-        with open('data/'+LAST_MSG_ID_FILE, 'r') as f:
-            return int(f.read().strip())
-    except:
-        return 0
+def get_latest_message():
+    url = f"{ZULIP_BASE_URL}/api/v1/messages"
+    params = {
+        "anchor": "newest",
+        "num_before": 1,
+        "num_after": 0,
+        "narrow": f'[["stream", "{STREAM_NAME}"]]'
+    }
+    response = requests.get(url, params=params, auth=(ZULIP_EMAIL, ZULIP_API_KEY))
+    response.raise_for_status()
+    messages = response.json().get("messages", [])
+    return messages[0] if messages else None
 
-def save_last_message_id(msg_id):
-    os.makedirs("data", exist_ok=True)
-    with open("data/"+LAST_MSG_ID_FILE, 'w') as f:
-        f.write(str(msg_id))
-
-def get_new_messages(anchor):
+def get_new_messages_after(anchor):
     url = f"{ZULIP_BASE_URL}/api/v1/messages"
     params = {
         "anchor": anchor,
@@ -35,8 +36,26 @@ def send_message(stream, topic, content):
     }
 
     # Send the message via Zulip REST API
-    requests.post(
+    response = requests.post(
         f"{ZULIP_BASE_URL}/api/v1/messages",
         data=payload,
         auth=(ZULIP_EMAIL, ZULIP_API_KEY)
     )
+    return response.json()
+
+def update_message(message_id, new_content=None, new_topic=None):
+    """
+    Update a Zulip message's content and/or topic.
+    """
+    payload = {}
+    if new_content is not None:
+        payload["content"] = new_content
+    if new_topic is not None:
+        payload["topic"] = new_topic
+
+    response = requests.patch(
+        f"{ZULIP_BASE_URL}/api/v1/messages/{message_id}",
+        data=payload,
+        auth=(ZULIP_EMAIL, ZULIP_API_KEY)
+    )
+    return response.json()
