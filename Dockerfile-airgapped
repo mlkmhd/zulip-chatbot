@@ -1,0 +1,12 @@
+FROM mlkmhd/zulip-chatbot
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app
+
+COPY . .
+
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+CMD ["python", "main.py"]

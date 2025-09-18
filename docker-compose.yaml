@@ -2,9 +2,15 @@ version: '3.8'
 
 services:
   zulip-bot:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-airgapped
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
+      - ENV=PROD
     volumes:
-      - ./data:/app/data
+      - .:/app
+    command:
+      - python
+      - main.py
